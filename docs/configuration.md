@@ -93,7 +93,7 @@ Over the limit, the endpoint returns `429` with a `Retry-After` header. The limi
 
 ## DCR client authentication
 
-The deprecated DCR endpoint accepts both public and confidential clients:
+The deprecated DCR endpoint accepts both public and confidential clients (both must send an S256 `code_challenge` on MCP authorize requests):
 
 - `token_endpoint_auth_method: none` creates a public PKCE client
 - `token_endpoint_auth_method: client_secret_basic` or `client_secret_post` creates a confidential client and returns `client_secret` once in the registration response

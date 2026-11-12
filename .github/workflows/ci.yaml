@@ -20,14 +20,14 @@ jobs:
             fail-fast: false
             matrix:
                 php: ['8.2', '8.3', '8.4', '8.5']
-                # 7.3 resolves to league/oauth2-server-bundle 0.10 (1.2 needs ^7.4), 7.4 and 8.x to 1.2.
-                symfony: ['7.3.*', '7.4.*', '8.0.*']
+                # league/oauth2-server-bundle ^1.2 needs framework-bundle ^7.4|^8.1, Symfony 8.1 needs PHP 8.4.
+                symfony: ['7.4.*', '8.1.*']
                 dependencies: ['highest']
                 exclude:
-                    - { php: '8.2', symfony: '8.0.*' }
-                    - { php: '8.3', symfony: '8.0.*' }
+                    - { php: '8.2', symfony: '8.1.*' }
+                    - { php: '8.3', symfony: '8.1.*' }
                 include:
-                    - { php: '8.2', symfony: '7.3.*', dependencies: 'lowest' }
+                    - { php: '8.2', symfony: '7.4.*', dependencies: 'lowest' }
         steps:
             - uses: actions/checkout@v4
 

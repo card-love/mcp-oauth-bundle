@@ -3,7 +3,8 @@
 > **Cardlove fork.** Maintained by Cardlove as `card-love/mcp-oauth-bundle` since 12.11.2026, after
 > [omouren/mcp-oauth-bundle](https://github.com/omouren/mcp-oauth-bundle) went quiet. Version line 2.x,
 > for `symfony/mcp-bundle` ^0.15. The PHP namespace `Omouren\McpOauthBundle` is unchanged on purpose.
-> Install it as a VCS repository; it is not on Packagist.
+> Install it as a VCS repository; it is not on Packagist. What changed: [CHANGELOG.md](CHANGELOG.md),
+> how it is kept: [docs/maintaining.md](docs/maintaining.md).
 
 Claude, Cursor, and the MCP Inspector cannot complete OAuth against a Symfony MCP server that only has mcp-bundle and League. Neither implements [MCP Authorization 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization):
 

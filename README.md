@@ -1,9 +1,14 @@
 # McpOauthBundle
 
+> **Cardlove fork.** Maintained by Cardlove as `card-love/mcp-oauth-bundle` since 12.11.2026, after
+> [omouren/mcp-oauth-bundle](https://github.com/omouren/mcp-oauth-bundle) went quiet. Version line 2.x,
+> for `symfony/mcp-bundle` ^0.15. The PHP namespace `Omouren\McpOauthBundle` is unchanged on purpose.
+> Install it as a VCS repository; it is not on Packagist.
+
 Claude, Cursor, and the MCP Inspector cannot complete OAuth against a Symfony MCP server that only has mcp-bundle and League. Neither implements [MCP Authorization 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization):
 
 - [`mcp/sdk`](https://github.com/modelcontextprotocol/php-sdk) and [`symfony/mcp-bundle`](https://github.com/symfony/mcp-bundle) expose JSON-RPC tools over HTTP. The SDK is an OAuth resource server at most: it validates Bearer tokens and may proxy to an upstream IdP. It will not issue tokens, run login or consent, or register clients. That is [explicitly out of scope](https://github.com/modelcontextprotocol/php-sdk/blob/main/adr/0001-oauth-authorization-server-out-of-scope.md).
-- [`league/oauth2-server-bundle`](https://github.com/thephpleague/oauth2-server-bundle) (`^0.10 || ^1.2`) gives you `/authorize`, `/token`, PKCE, and JWT. It does not implement MCP discovery, CIMD, or resource indicators.
+- [`league/oauth2-server-bundle`](https://github.com/thephpleague/oauth2-server-bundle) (`^1.2`) gives you `/authorize`, `/token`, PKCE, and JWT. It does not implement MCP discovery, CIMD, or resource indicators.
 
 This bundle sits on top of both and adds RFC 8414 / 9728 discovery, CIMD, resource-bound tokens, RFC 9207 `iss`, and the WWW-Authenticate challenge that points clients at protected-resource metadata.
 
@@ -13,7 +18,7 @@ This bundle only touches MCP. Other routes and other League clients on the same 
 
 ## Getting started
 
-`composer require omouren/mcp-oauth-bundle` also installs mcp-bundle and League. You still configure those packages in your app.
+`composer require card-love/mcp-oauth-bundle` also installs mcp-bundle and League. You still configure those packages in your app.
 
 Register the bundle and import its routes:
 

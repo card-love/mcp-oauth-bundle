@@ -129,10 +129,15 @@ final readonly class ClientIdMetadataResolver
             if (!\is_string($uri) || '' === $uri) {
                 throw new CimdException('Metadata redirect_uris must be strings.');
             }
-            if (!$this->isAllowedRedirectUri($uri)) {
-                throw new CimdException(\sprintf('Metadata redirect URI "%s" is not allowed.', $uri));
+            // Native apps list private-use schemes next to a loopback URI (RFC 8252 §7.1); skipping the
+            // ones we do not serve keeps the client usable, and league only redirects to stored URIs.
+            if ($this->isAllowedRedirectUri($uri)) {
+                $uris[] = $uri;
             }
-            $uris[] = $uri;
+        }
+
+        if ([] === $uris) {
+            throw new CimdException('Metadata has no allowed redirect URI (https, or http on a loopback host).');
         }
 
         return new ClientIdMetadataDocument($clientId, $clientName, $uris);

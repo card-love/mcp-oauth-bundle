@@ -170,14 +170,32 @@ final class ClientIdMetadataResolverTest extends TestCase
     }
 
     #[DataProvider('unsafeRedirectUris')]
-    public function testRejectsUnsafeRedirectUri(string $redirectUri): void
+    public function testRejectsDocumentWhoseOnlyRedirectUriIsUnsafe(string $redirectUri): void
     {
         $url = 'https://claude.ai/oauth/client-metadata.json';
         $http = new MockHttpClient([$this->documentResponse($url, 'Claude', [$redirectUri])]);
 
         $this->expectException(CimdException::class);
-        $this->expectExceptionMessage('is not allowed');
+        $this->expectExceptionMessage('no allowed redirect URI');
         $this->resolver($http)->resolve($url);
+    }
+
+    #[DataProvider('unsafeRedirectUris')]
+    public function testSkipsUnsafeRedirectUriNextToAnAllowedOne(string $redirectUri): void
+    {
+        $url = 'https://claude.ai/oauth/client-metadata.json';
+        $http = new MockHttpClient([$this->documentResponse($url, 'Claude', [$redirectUri, 'https://claude.ai/api/mcp/auth_callback'])]);
+
+        self::assertSame(['https://claude.ai/api/mcp/auth_callback'], $this->resolver($http)->resolve($url)->redirectUris);
+    }
+
+    public function testKeepsOnlyTheLoopbackUriOfANativeAppDocument(): void
+    {
+        $url = 'https://www.raycast.com/.well-known/oauth-client-metadata/raycast.json';
+        $redirectUris = ['com.raycast:/oauth', 'com.raycast-x:/oauth', 'raycast://mcp-oauth-callback', 'http://127.0.0.1/callback'];
+        $http = new MockHttpClient([$this->documentResponse($url, 'Raycast', $redirectUris)]);
+
+        self::assertSame(['http://127.0.0.1/callback'], $this->resolver($http, ['raycast.com'])->resolve($url)->redirectUris);
     }
 
     /**
@@ -202,9 +220,12 @@ final class ClientIdMetadataResolverTest extends TestCase
         self::assertSame($redirectUris, $this->resolver($http)->resolve($url)->redirectUris);
     }
 
-    private function resolver(HttpClientInterface $http): ClientIdMetadataResolver
+    /**
+     * @param list<string> $trustedDomains
+     */
+    private function resolver(HttpClientInterface $http, array $trustedDomains = ['claude.ai']): ClientIdMetadataResolver
     {
-        return new ClientIdMetadataResolver($http, new ArrayAdapter(), $this->settings());
+        return new ClientIdMetadataResolver($http, new ArrayAdapter(), $this->settings($trustedDomains));
     }
 
     /**
@@ -222,7 +243,10 @@ final class ClientIdMetadataResolverTest extends TestCase
         ]);
     }
 
-    private function settings(): McpOauthSettings
+    /**
+     * @param list<string> $trustedDomains
+     */
+    private function settings(array $trustedDomains = ['claude.ai']): McpOauthSettings
     {
         return new McpOauthSettings(
             resourcePaths: ['/_mcp'],
@@ -232,7 +256,7 @@ final class ClientIdMetadataResolverTest extends TestCase
             redirectQueryParam: '_target_path',
             consent: 'page',
             cimdEnabled: true,
-            trustedDomains: ['claude.ai'],
+            trustedDomains: $trustedDomains,
             dcrEnabled: true,
             resourceIndicators: true,
             issuerIdentification: true,

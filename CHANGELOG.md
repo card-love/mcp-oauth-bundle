@@ -4,6 +4,14 @@ This is the Cardlove fork of [omouren/mcp-oauth-bundle](https://github.com/omour
 maintained as `card-love/mcp-oauth-bundle` since 2026-11-12. Upstream's own releases end at `1.2`.
 How the fork is kept: [docs/maintaining.md](docs/maintaining.md).
 
+## 2.2.0 — 2026-11-15
+
+- **Skip CIMD redirect URIs we cannot serve instead of refusing the client.** Native apps list
+  private-use schemes next to their loopback URI (RFC 8252 §7.1): Raycast has seven app schemes and
+  `http://127.0.0.1/callback`. 2.1.0 refused the whole document on the first such URI; now only the
+  https and loopback-http URIs are stored, and a document left with none is still refused. League
+  redirects only to stored URIs, so a skipped one cannot be used.
+
 ## 2.1.0 — 2026-11-12
 
 The six pull requests left open upstream (all by Javier Eguiluz, 2026-10-06), merged unchanged:

@@ -4,6 +4,18 @@ This is the Cardlove fork of [omouren/mcp-oauth-bundle](https://github.com/omour
 maintained as `card-love/mcp-oauth-bundle` since 2026-11-12. Upstream's own releases end at `1.2`.
 How the fork is kept: [docs/maintaining.md](docs/maintaining.md).
 
+## 2.3.0 — 2026-11-15
+
+- **Require `league/oauth2-server-bundle` `^2.0`** (was `^1.2`). Nothing in the bundle had to change:
+  the tests and PHPStan pass on 2.0.0 for Symfony 7.4 and 8.1, its Doctrine mapping is byte-identical
+  to 1.2.3, and the consuming backend ran its full suite green on it. League 2 itself needs Symfony
+  7.4 or 8.1, so the `symfony/*` constraints say so now too (`^7.4|^8.1`).
+- **Removed `LeagueCompatibilityPass` and `AccessTokenRepositoryDecorator`.** They emitted the RFC 8707
+  claims for League 0.10, which had no `AccessTokenExtraClaimsResolveEvent`; every version we allow has
+  it, so the pass returned at its first line.
+- A consumer can drop `client.allow_plaintext_secrets` from its League config: 2.0 ignores it and
+  reports a deprecation.
+
 ## 2.2.0 — 2026-11-15
 
 - **Skip CIMD redirect URIs we cannot serve instead of refusing the client.** Native apps list

@@ -8,7 +8,7 @@ It is public, consumed as a Composer `vcs` repository, and not on Packagist.
 - **The PHP namespace `Omouren\McpOauthBundle`.** Renaming it would touch every consumer for nothing.
 - **Our tag line is 2.x.** Upstream's tags are `1.0`–`1.2`; a revived upstream `1.3` cannot clash.
 - **No backward-compatibility ranges we do not run.** We require what the consumer actually uses
-  (today mcp-bundle `^0.15`, league `^1.2`); widening is a deliberate step, not a default.
+  (today mcp-bundle `^0.15`, league `^2.0`); widening is a deliberate step, not a default.
 
 ## Releasing
 
